@@ -5,10 +5,9 @@
 	This is a program to sort the numbers in ascending order which are present in files a.txt, b.txt, c.txt, d.txt, e.txt which can be of any no of digits
 	The Logic goes as follows
 		1>First we find out the no of digits in each file using tellg() function after seeking to the end of the file using seekg()
-		2>Since we have the number of digits in each file we perform primary sorting in which we sort the files based on the number of digits
-		3>Now the next step is to find the collection of files which have the same no of digits and perform secondary sorting to arrange among themselves
-			3.1>The Secondary sorting goes by comparing the numbers from the files which has the same no of digits from LSB to MSB
-		4>At last, after the secondary sorting the output is written to output.txt	
+		2>Since the number of digits in each file varies, a function named primary sorting is implemented, which sorts the files based on the number of digits in the files
+		3>After grouping the set of files which have the same no of digits, a function named secondary sorting is implemented to arrange this set of files alone in ascending order. This sorting compares the digits from LSB to MSB in each file of this set
+		4>The resultant sorted order of the files is written to output.txt	
 
 
 	----------------------------------------------------------------------END OF DOCUMENTATION-----------------------------------------------------------------
