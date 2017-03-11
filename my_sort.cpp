@@ -1,3 +1,23 @@
+/*		
+
+	------------------------------------------------------------------------DOCUMENTATION-----------------------------------------------------------------
+
+	This is a program to sort the numbers in ascending order which are present in files a.txt, b.txt, c.txt, d.txt, e.txt which can be of any no of digits
+	The Logic goes as follows
+		1>First we find out the no of digits in each file using tellg() function after seeking to the end of the file using seekg()
+		2>Since we have the number of digits in each file we perform primary sorting in which we sort the files based on the number of digits
+		3>Now the next step is to find the collection of files which have the same no of digits and perform secondary sorting to arrange among themselves
+			3.1>The Secondary sorting goes by comparing the numbers from the files which has the same no of digits from LSB to MSB
+		4>At last, after the secondary sorting the output is written to output.txt	
+
+
+	----------------------------------------------------------------------END OF DOCUMENTATION-----------------------------------------------------------------
+
+	
+*/
+
+
+
 #include<iostream>
 #include<fstream>
 
@@ -136,58 +156,57 @@ class My_sort{
 			int num[col];
 			char temp[col];
 			int temp1;
-			int pos;
+			int pos,a,b;
 			
 			for(int i=noOfDigits[s[0]]-1;i>=0;i--){
 				for(int j=0;j<col;j++){
 					file[result[s[j]]].seekg(i,ios::beg);
 					file[result[s[j]]].get(temp[j]);
-					cout<<temp[j]<<" - "<<result[s[j]]<<" , ";
-				}
-				cout<<"\n";
-				for(int a=0;a<col-1;a++){
-					pos = a;				
-					for(int b=a+1;b<col;b++){
-						if(temp[b] < temp[pos]){
-							pos = b;
-						}
-					}
-					if(temp[a] == temp[pos]){
-						continue;
-					}
-					
-					temp1 = result[s[pos]];
-					result[s[pos]] = result[s[a]];
-					result[s[a]] = temp1;
-					//cout<<"swapping "<<temp[pos]<<" "<<temp[a]<<"\n";
-					temp1 = temp[pos];
-					temp[pos] = temp[a];
-					temp[a] = temp1;
 					
 				}
+				
+
+				for(a=1;a<col;a++){
+					b=a;
+					while(b>0 && temp[b-1]>temp[b]){
+						temp1 = result[s[b]];
+						result[s[b]] = result[s[b-1]];
+						result[s[b-1]] = temp1;
+
+						temp1 = temp[b];
+						temp[b] = temp[b-1];
+						temp[b-1] = temp1;
+						b=b-1;
+					}
+
+
+				}
+
+				
 			}
 		}
 
 		//printing the final output
 		void printSortedOrder(){
-
+			ofstream of("output.txt");
+			
 			for(int i=0;i<5;i++){
 
 				switch(result[i]){
 					case 0:
-						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"a.txt"<<"\n";		
+						of<<"a.txt"<<"\n";		
 						break;
 					case 1:
-						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"b.txt"<<"\n";		
+						of<<"b.txt"<<"\n";		
 						break;
 					case 2:
-						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"c.txt"<<"\n";		
+						of<<"c.txt"<<"\n";		
 						break;
 					case 3:
-						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"d.txt"<<"\n";		
+						of<<"d.txt"<<"\n";		
 						break;
 					case 4:
-						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"e.txt"<<"\n";		
+						of<<"e.txt"<<"\n";		
 						break;
 
 					
