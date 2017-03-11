@@ -1,0 +1,227 @@
+#include<iostream>
+#include<fstream>
+
+using namespace std;
+
+class My_sort{
+
+	private:
+		
+		//input file stream array for files a.txt, b.txt, c.txt, d.txt, e.txt respectively
+		ifstream file[5];
+		
+		//no of digits in file a.txt,b.txt,c.txt,d.txt,e.txt respectively
+		int noOfDigits[5];
+
+		//this is a matrix which gives groups the numbers that have the same no of digits
+		int sameNoOFDigits[5][5];
+		
+		//sorted order of files in accordance with the numbers present in it
+		int result[5];	
+
+		
+		
+		
+	
+	public :
+
+		
+	
+		//constructor
+		My_sort(){
+			file[0].open("a.txt");
+			file[1].open("b.txt");
+			file[2].open("c.txt");
+			file[3].open("d.txt");
+			file[4].open("e.txt");
+		
+			//result array 
+			result[0]=0;
+			result[1]=1;
+			result[2]=2;
+			result[3]=3;
+			result[4]=4;
+			
+			//initilizing with -1
+			for(int i=0;i<5;i++){
+				for(int j=0;j<5;j++){
+					sameNoOFDigits[i][j]=-1;
+				}
+				
+			}
+
+
+		}
+
+
+		//find no of digits present in files a.txt, b.txt, c.txt, d.txt, e.txt
+		int findNoOfDigits(){
+
+			for(int i=0;i<5;i++){
+				streampos begin, end;
+				if(file[i].is_open()){
+					begin = file[i].tellg();
+					file[i].seekg(0,ios::end);
+					end = file[i].tellg();
+					noOfDigits[i] = (int)end-begin-1;
+
+				}else{
+					cout<<"error";
+				}
+
+			}
+		}
+
+		
+		//sort the files with respect to no of digits
+		void myPrimarySort(){		
+			int pos,t;
+			for(int i=0;i<5;i++){
+				pos = i;				
+				for(int j=i+1;j<5;j++){
+					if(noOfDigits[j] < noOfDigits[pos]){
+						pos = j;
+					}
+				}
+				t = result[pos];
+				result[pos] = result[i];
+				result[i] = t;
+				t = noOfDigits[pos];
+				noOfDigits[pos] = noOfDigits[i];
+				noOfDigits[i] = t;
+					
+			}
+		}
+
+
+		//finding the numbers which have the same number of digits
+		void findSameDigitsSet(){
+			int row=0,col=0;
+			for(int i=0;i<4;i++){
+				if(noOfDigits[i] == noOfDigits[i+1]){
+					sameNoOFDigits[row][col] = i;
+					col++;
+				}else{
+					sameNoOFDigits[row][col]=i;
+					row++;
+					col=0;	
+				}
+			}
+			if(noOfDigits[4]==noOfDigits[3]){
+				sameNoOFDigits[row][col]=4;
+			}else{
+				
+				sameNoOFDigits[row][0]=4;
+			}
+			
+			for(int i=0;i<5;i++){
+				col=0;
+				for(int j=0;j<5 && sameNoOFDigits[i][j]!=-1;j++){
+					col++;
+				}
+				if(col>1){
+					mySecondarySort(sameNoOFDigits[i],col);
+				}
+				
+			}
+			
+			
+
+		}
+
+
+
+		//this sorts the numbers which have same number of digits
+		void mySecondarySort(int s[5],int col){
+			int num[col];
+			char temp[col];
+			int temp1;
+			int pos;
+			
+			for(int i=noOfDigits[s[0]]-1;i>=0;i--){
+				for(int j=0;j<col;j++){
+					file[result[s[j]]].seekg(i,ios::beg);
+					file[result[s[j]]].get(temp[j]);
+					cout<<temp[j]<<" - "<<result[s[j]]<<" , ";
+				}
+				cout<<"\n";
+				for(int a=0;a<col-1;a++){
+					pos = a;				
+					for(int b=a+1;b<col;b++){
+						if(temp[b] < temp[pos]){
+							pos = b;
+						}
+					}
+					if(temp[a] == temp[pos]){
+						continue;
+					}
+					
+					temp1 = result[s[pos]];
+					result[s[pos]] = result[s[a]];
+					result[s[a]] = temp1;
+					//cout<<"swapping "<<temp[pos]<<" "<<temp[a]<<"\n";
+					temp1 = temp[pos];
+					temp[pos] = temp[a];
+					temp[a] = temp1;
+					
+				}
+			}
+		}
+
+		//printing the final output
+		void printSortedOrder(){
+
+			for(int i=0;i<5;i++){
+
+				switch(result[i]){
+					case 0:
+						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"a.txt"<<"\n";		
+						break;
+					case 1:
+						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"b.txt"<<"\n";		
+						break;
+					case 2:
+						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"c.txt"<<"\n";		
+						break;
+					case 3:
+						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"d.txt"<<"\n";		
+						break;
+					case 4:
+						cout<<"no of digits = "<<noOfDigits[i]<<" - File = "<<"e.txt"<<"\n";		
+						break;
+
+					
+				}
+			}
+		}
+
+		
+		//destructor
+		~My_sort(){
+			file[0].close();
+			file[1].close();
+			file[2].close();
+			file[3].close();
+			file[4].close();
+		}
+
+
+};
+
+
+
+
+
+
+int main(){
+	streampos begin,end;
+	My_sort my_sort;
+	my_sort.findNoOfDigits();
+	my_sort.myPrimarySort();
+	my_sort.findSameDigitsSet();
+	my_sort.printSortedOrder();
+	
+	
+	
+	return 0;
+}
